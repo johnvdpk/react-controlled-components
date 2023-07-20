@@ -2,14 +2,32 @@ import React, { useState } from 'react';
 import './App.css';
 
 function App() {
-    const [formName, setFormName] = useState('');
-    const [formAge, setFormAge] = useState(0);
-    const [formNewsletter, setFormNewsletter] = useState(false);
-    const [formComments, setFormComments] = useState('');
+    // initialiseer één state variabele met daarin een object aan form-waardes
+    // let op: de namen van de keys moeten overeenkomen met de name-attributen van de velden
+const [formState, setFormState] = useState({
+    name: '',
+    age: 0,
+    comments: '',
+    newsletter: false,
+} );
 
     function handleSubmit(e) {
         e.preventDefault();
-        console.log(formComments, formNewsletter, formAge, formName);
+        console.log(formState);
+    }
+
+    // handleFormChange wordt afgevuurd bij elke verandering en zorgt dan dat het huidige state object wordt gekopieerd
+    // alleen de object key van het bijbehorende inputveld wordt overschreven met een nieuwe waarde
+    function handleFormChange(e) {
+        const changedFieldName = e.target.name;
+        const newValue = e.target.type === "checkbox" ? e.target.checked : e.target.value;
+
+        setFormState({
+            ...formState,
+            [changedFieldName]: newValue,
+
+        });
+        console.log(`The value of input ${e.target.name} has just been set to ${e.target.value}`);
     }
 
     return (
@@ -23,8 +41,8 @@ function App() {
                         type="text"
                         name="name"
                         id="details-name"
-                        value={formName}
-                        onChange={(e) => setFormName(e.target.value)}
+                        value={formState.name}
+                        onChange={handleFormChange}
                     />
                 </label>
 
@@ -34,8 +52,8 @@ function App() {
                         type="number"
                         name="age"
                         id="details-age"
-                        value={formAge}
-                        onChange={(e) => setFormAge(parseInt(e.target.value))}
+                        value={formState.age}
+                        onChange={handleFormChange}
                     />
                 </label>
             </fieldset>
@@ -51,8 +69,8 @@ function App() {
                         rows="4"
                         cols="40"
                         placeholder="Wat vond je van het recept?"
-                        value={formComments}
-                        onChange={(e) => setFormComments(e.target.value)}
+                        value={formState.comments}
+                        onChange={handleFormChange}
                     >
           </textarea>
                 </label>
@@ -61,8 +79,8 @@ function App() {
                     <input
                         type="checkbox"
                         name="newsletter"
-                        checked={formNewsletter}
-                        onChange={() => setFormNewsletter(!formNewsletter)}
+                        checked={formState.newsletter}
+                        onChange={handleFormChange}
                     />
                     Ik schrijf me in voor de nieuwsbrief
                 </label>
